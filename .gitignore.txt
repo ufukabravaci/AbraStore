@@ -1,0 +1,70 @@
+# Visual Studio (ASP.NET Core, .NET)
+.vscode/
+*.user
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.ide
+*.dbmdl
+*.jfm
+
+# Build outputs
+bin/
+obj/
+*.pdb
+*.dll
+*.exe
+*.log
+
+# Entity Framework Migrations
+Migrations/
+
+# ASP.NET Core
+appsettings.Development.json
+appsettings.Production.json
+appsettings.json
+
+# User-specific files
+*.vs/
+*.DS_Store
+
+# NuGet Packages
+*.nupkg
+packages/
+!packages/repositories.config
+
+# npm dependencies (React)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build outputs (React)
+dist/
+build/
+
+# Environment variables (React)
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Logs
+logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage reports
+coverage/
+lcov-report/
+
+# React Editor files
+.eslintcache
+.idea/
+
+# Git ignore for .NET secrets
+secrets.json
+
+# Optional: Docker (eğer Docker kullanıyorsanız)
+.dockerignore
+docker-compose.override.yml
