@@ -30,8 +30,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
 app.UseCors(policy => {
-    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+    policy.AllowAnyHeader()
+          .AllowAnyMethod()
+          .WithOrigins("http://localhost:3000", "https://localhost:3000");
 });
 
 app.UseAuthorization();

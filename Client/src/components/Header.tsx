@@ -1,9 +1,19 @@
-import { IProduct } from "../model/IProduct";
+import { AppBar, Container, Toolbar, Typography } from "@mui/material";
+// import { IProduct } from "../model/IProduct";
 
-interface Props {
-    products: IProduct[];
-}
-function Header(props: Props) {
-  return <h1>Header[{props.products.length}]</h1>;
+// // interface Props {
+// //     products: IProduct[];
+// // }
+function Header() {
+  return (
+    <AppBar position="static" sx={{ mb: 4 }}>
+      <Toolbar>
+        <Container>
+          <Typography variant="h6">AbraStore</Typography>
+        </Container>
+        {/* <Typography variant="h6">AbraStore</Typography> */}
+      </Toolbar>
+    </AppBar>
+  );
 }
 export default Header;
