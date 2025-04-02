@@ -37,7 +37,8 @@ app.UseStaticFiles();
 app.UseCors(policy => {
     policy.AllowAnyHeader()
           .AllowAnyMethod()
-          .WithOrigins("http://localhost:3000", "https://localhost:3000");
+          .AllowCredentials()
+          .WithOrigins("http://localhost:3000");
 });
 
 app.UseAuthorization();
