@@ -13,6 +13,7 @@ import { Link } from "react-router";
 import { useState } from "react";
 import requests from "../../api/requests";
 import { useCartContext } from "../../context/useCartContext";
+import { toast } from "react-toastify";
 interface Props {
   product: IProduct;
 }
@@ -22,7 +23,9 @@ export default function Product({ product }: Props) {
   const handleAddItem = (productId: number) => {
     setLoading(true);
     requests.Cart.add(productId)
-    .then(cart => setCart(cart))
+    .then(cart => {setCart(cart)
+          toast.success("Product added to cart")
+        })
     .catch(error => console.log(error))
     .finally(() => setLoading(false));
   };

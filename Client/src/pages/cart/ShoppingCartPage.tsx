@@ -18,6 +18,7 @@ import { useCartContext } from "../../context/useCartContext";
 import { useState } from "react";
 import requests from "../../api/requests";
 import { toast } from "react-toastify";
+import CartSummary from "./CartSummary";
 
 export default function ShoppingCartPage() {
   const { cart, setCart } = useCartContext();
@@ -103,6 +104,7 @@ export default function ShoppingCartPage() {
               </TableCell>
             </TableRow>
           ))}
+          <CartSummary/>
         </TableBody>
       </Table>
     </TableContainer>
