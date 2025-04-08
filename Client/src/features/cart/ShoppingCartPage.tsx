@@ -14,40 +14,18 @@ import {
   RemoveCircleOutline,
 } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { useCartContext } from "../../context/useCartContext";
-import { useState } from "react";
-import requests from "../../api/requests";
-import { toast } from "react-toastify";
 import CartSummary from "./CartSummary";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { addItemToCart, deleteItemFromCart } from "./cartSlice";
+import { toast } from "react-toastify";
 
 export default function ShoppingCartPage() {
-  const { cart, setCart } = useCartContext();
-  const [status, setStatus] = useState({loading:false, id:""});
+  const { cart, status } = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
 
-  const handleAddItem = (productId: number , id:string) => {
-    setStatus({loading:true, id: id});
-    requests.Cart.add(productId)
-      .then((cart) => {
-        setCart(cart);
-        toast.success("Product added to your cart!");
-      })
-      .catch((e) => console.log(e))
-      .finally(() => setStatus({loading: false, id: ""}));
-  };
-
-  function handleDeleteItem(productId: number, id:string, quantity = 1) {
-    setStatus({loading:true, id:id});
-    requests.Cart.deleteItem(productId, quantity)
-      .then((cart) => {
-        setCart(cart)
-        toast.error("Product deleted from your cart");
-      })
-      .catch((error) => console.log(error))
-      .finally(() => setStatus({loading:false, id: ""}));
-  }
-
-  if (cart?.cartItems.length === 0) return <Alert severity="warning">There are no items in your cart.</Alert>
-
+  if (cart?.cartItems.length === 0)
+    return <Alert severity="warning">There are no items in your cart.</Alert>;
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -80,15 +58,21 @@ export default function ShoppingCartPage() {
               <TableCell align="right">{item.price}</TableCell>
               <TableCell align="right">
                 <LoadingButton
-                  loading={status.loading && status.id === "add" + item.productId}
-                  onClick={() => handleAddItem(item.productId, "add" + item.productId)}
+                  loading={status === "pendingAddItem" + item.productId}
+                  onClick={() => {
+                    dispatch(addItemToCart({ productId: item.productId }));
+                    toast.success("Item added to cart");
+                  }}
                 >
                   <AddCircleOutline />
                 </LoadingButton>
                 {item.quantity}
                 <LoadingButton
-                  loading={status.loading && status.id === "del" + item.productId}
-                  onClick={() => handleDeleteItem(item.productId, "del" + item.productId)}
+                  loading={status === "pendingDeleteItem" + item.productId + "single"}
+                  onClick={() => {
+                    dispatch(deleteItemFromCart({ productId: item.productId, quantity:1, key: "single" }));
+                    toast.error("Item removed from cart");
+                  }}
                 >
                   <RemoveCircleOutline />
                 </LoadingButton>
@@ -96,15 +80,18 @@ export default function ShoppingCartPage() {
               <TableCell align="right">{item.price * item.quantity}$</TableCell>
               <TableCell align="right">
                 <LoadingButton
-                  loading={status.loading && status.id === "del_all" + item.productId}
-                  onClick={() => handleDeleteItem(item.productId, "del_all" + item.productId, item.quantity)}
+                  loading={status === "pendingAddItem" + item.productId + "all"}
+                  onClick={() => {
+                    dispatch(deleteItemFromCart({ productId: item.productId, quantity: item.quantity, key: "all" }));
+                    toast.error("Item removed from cart");
+                  }}
                 >
                   <Delete color="error" />
                 </LoadingButton>
               </TableCell>
             </TableRow>
           ))}
-          <CartSummary/>
+          <CartSummary />
         </TableBody>
       </Table>
     </TableContainer>

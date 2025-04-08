@@ -1,8 +1,8 @@
 import { TableCell, TableRow } from "@mui/material";
-import { useCartContext } from "../../context/useCartContext";
+import { useAppSelector } from "../../hooks/useAppSelector";
 
 export default function CartSummary() {
-    const { cart } = useCartContext();
+    const { cart } = useAppSelector(state => state.cart);
     const subTotal = cart?.cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0) || 0;
     const tax = subTotal * 0.2; // Assuming a tax rate of 20%
   return (

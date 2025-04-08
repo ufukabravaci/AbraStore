@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
-import { useCartContext } from "../context/useCartContext";
+import { useAppSelector } from "../hooks/useAppSelector";
 
 const links = [
   { title: "Home", to: "/" },
@@ -33,7 +33,7 @@ const navStyles = {
   },
 };
 function Header() {
-  const {cart} = useCartContext();
+  const {cart} = useAppSelector(state => state.cart);
   const totalItemCount = cart?.cartItems.reduce((total,item) => total += item.quantity,0)
   return (
     <AppBar position="static" sx={{ mb: 4 }}>

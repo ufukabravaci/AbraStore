@@ -10,26 +10,16 @@ import { IProduct } from "../../model/IProduct";
 import { AddShoppingCart } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router";
-import { useState } from "react";
-import requests from "../../api/requests";
-import { useCartContext } from "../../context/useCartContext";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { addItemToCart } from "../cart/cartSlice";
+import { useAppSelector } from "../../hooks/useAppSelector";
 import { toast } from "react-toastify";
 interface Props {
   product: IProduct;
 }
 export default function Product({ product }: Props) {
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const {setCart} = useCartContext();
-  const handleAddItem = (productId: number) => {
-    setLoading(true);
-    requests.Cart.add(productId)
-    .then(cart => {setCart(cart)
-          toast.success("Product added to cart")
-        })
-    .catch(error => console.log(error))
-    .finally(() => setLoading(false));
-  };
-
+  const { status } = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
   return (
     <Card>
       <CardMedia
@@ -55,8 +45,11 @@ export default function Product({ product }: Props) {
           size="small"
           startIcon={<AddShoppingCart />}
           color="success"
-          onClick={() => handleAddItem(product.id)}
-          loading={isLoading}
+          onClick={() => {
+            dispatch(addItemToCart({ productId: product.id }));
+            toast.success("Item added to cart");
+          }}
+          loading={status === "pending" + product.id}
           loadingPosition="start"
         >
           ADD TO CART

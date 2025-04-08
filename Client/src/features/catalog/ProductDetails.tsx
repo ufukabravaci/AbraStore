@@ -10,43 +10,30 @@ import {
   TableCell,
   Stack,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router";
-import { IProduct } from "../../model/IProduct";
-import requests from "../../api/requests";
 import { LoadingButton } from "@mui/lab";
 import { AddShoppingCart } from "@mui/icons-material";
-import { useCartContext } from "../../context/useCartContext";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { addItemToCart } from "../cart/cartSlice";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { toast } from "react-toastify";
+import { fetchProductById, selectProductById } from "./catalogSlice";
 
 export default function ProductDetails() {
+  const { cart, status } = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
-  const { cart, setCart } = useCartContext();
-  const [product, setProduct] = useState<IProduct | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isAdded, setIsAdded] = useState(false);
+  const product = useAppSelector(state => selectProductById(state, Number(id)));
+  const {status: loading} = useAppSelector((state) => state.catalog);
 
   const item = cart?.cartItems.find((item) => item.productId === product?.id);
   useEffect(() => {
-    if (!id) return;
-    requests.Catalog.details(parseInt(id))
-      .then((data) => setProduct(data))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+    if(!product && id)
+    dispatch(fetchProductById(Number(id)))
   }, [id]);
 
-  function handleAddItem(productId: number) {
-    setIsAdded(true);
-    requests.Cart.add(productId)
-      .then((cart) => {
-        setCart(cart);
-        toast.success("Product added to cart");
-      })
-      .catch((error) => console.log(error))
-      .finally(() => setIsAdded(false));
-  }
-
-  if (loading) return <CircularProgress />;
+  if (loading === "pendingFetchProductById") return <CircularProgress />;
   if (!product) return <Typography variant="h5">Product not found</Typography>;
 
   return (
@@ -93,8 +80,11 @@ export default function ProductDetails() {
             variant="outlined"
             loadingPosition="start"
             startIcon={<AddShoppingCart />}
-            loading={isAdded}
-            onClick={() => handleAddItem(product.id)}
+            loading={status === "pendingAddItem" + product.id}
+            onClick={() => {
+              dispatch(addItemToCart({ productId: product.id }));
+              toast.success("Item added to cart");
+            }}
             disabled={
               !!item &&
               product?.stock !== undefined &&
@@ -103,7 +93,7 @@ export default function ProductDetails() {
           >
             {!!item && !!product && item.quantity >= (product?.stock ?? 0) //check if item quantity is greater than or equal to stock
               ? "Out of stock"
-              : "Add to Cart"} 
+              : "Add to Cart"}
           </LoadingButton>
           {item?.quantity && item.quantity > 0 && (
             <Typography variant="body2">
