@@ -1,13 +1,19 @@
 using API.Entity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
-public class DataContext : DbContext
+public class DataContext : IdentityDbContext<AppUser, AppRole, string>
 {
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }
+
+    public DbSet<Product> Products => Set<Product>();
+    public DbSet<Cart> Carts => Set<Cart>();
+    public DbSet<CartItem> CartItems => Set<CartItem>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -30,8 +36,4 @@ public class DataContext : DbContext
             }
         );
     }
-
-    public DbSet<Product> Products => Set<Product>();
-    public DbSet<Cart> Carts => Set<Cart>();
-    public DbSet<CartItem> CartItems => Set<CartItem>();
 }
