@@ -22,7 +22,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> Login(LoginDTO model)
     {
         var user = await _userManager.FindByNameAsync(model.UserName);
-        if (user == null) return BadRequest(new { message = "Invalid username!" });
+        if (user == null) return BadRequest(new ProblemDetails { Title = "Invalid username" });
 
         var result = await _userManager.CheckPasswordAsync(user, model.Password);
         if (result) return Ok(new { token = await _tokenService.GenerateToken(user) });
