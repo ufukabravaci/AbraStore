@@ -1,6 +1,7 @@
 using API.DTO;
 using API.Entity;
 using API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,17 +20,21 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginDTO model)
+    public async Task<ActionResult<UserDTO>> Login(LoginDTO model)
     {
         var user = await _userManager.FindByNameAsync(model.UserName);
         if (user == null) return BadRequest(new ProblemDetails { Title = "Invalid username" });
 
         var result = await _userManager.CheckPasswordAsync(user, model.Password);
-        if (result) return Ok(new { token = await _tokenService.GenerateToken(user) });
+        if (result) return Ok(new UserDTO
+        {
+            Name = user.Name!,
+            Token = await _tokenService.GenerateToken(user)
+        });
         return Unauthorized();
     }
 
-    
+
 
     [HttpPost("register")]
     public async Task<IActionResult> CreateUser(RegisterDTO model)
@@ -51,6 +56,19 @@ public class AccountController : ControllerBase
         return BadRequest(result.Errors);
     }
 
-    
 
+    [HttpGet("getuser")]
+    [Authorize]
+    public async Task<ActionResult<UserDTO>> GetUser()
+    {
+        var user = await _userManager.FindByNameAsync(User.Identity?.Name!);
+        if (user == null) return BadRequest(new ProblemDetails { Title = "User not found" });
+
+        return new UserDTO
+        {
+            Name = user.Name!,
+            Token = await _tokenService.GenerateToken(user)
+        };
+    }
+    
 }

@@ -14,11 +14,10 @@ import { useEffect } from "react";
 import { useParams } from "react-router";
 import { LoadingButton } from "@mui/lab";
 import { AddShoppingCart } from "@mui/icons-material";
-import { useAppSelector } from "../../hooks/useAppSelector";
 import { addItemToCart } from "../cart/cartSlice";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { toast } from "react-toastify";
 import { fetchProductById, selectProductById } from "./catalogSlice";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 
 export default function ProductDetails() {
   const { cart, status } = useAppSelector((state) => state.cart);

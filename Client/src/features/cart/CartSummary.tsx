@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from "@mui/material";
-import { useAppSelector } from "../../hooks/useAppSelector";
+import { useAppSelector } from "../../store/store";
 
 export default function CartSummary() {
     const { cart } = useAppSelector(state => state.cart);

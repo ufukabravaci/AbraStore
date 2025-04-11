@@ -10,10 +10,9 @@ import { IProduct } from "../../model/IProduct";
 import { AddShoppingCart } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { addItemToCart } from "../cart/cartSlice";
-import { useAppSelector } from "../../hooks/useAppSelector";
 import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 interface Props {
   product: IProduct;
 }

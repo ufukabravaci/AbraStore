@@ -3,15 +3,15 @@ import {
   AppBar,
   Badge,
   Box,
+  Button,
   IconButton,
-  List,
-  ListItem,
+  Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
-import { Link } from "react-router-dom";
-import { NavLink } from "react-router-dom";
-import { useAppSelector } from "../hooks/useAppSelector";
+import { Link, NavLink } from "react-router";
+import { logout } from "../features/account/accountSlice";
+import { useAppDispatch, useAppSelector } from "../store/store";
 
 const links = [
   { title: "Home", to: "/" },
@@ -24,62 +24,85 @@ const links = [
 const authLinks = [
   { title: "Login", to: "/login" },
   { title: "Register", to: "/register" },
-]
+];
 
 const navStyles = {
   color: "inherit",
-  mr: -1,
   textDecoration: "none",
   "&:hover": {
     color: "text.primary",
   },
   "&.active": {
     color: "warning.main",
-    fontWeight: "bold",
   },
 };
-function Header() {
-  const {cart} = useAppSelector(state => state.cart);
-  const totalItemCount = cart?.cartItems.reduce((total,item) => total += item.quantity,0)
+
+export default function Header() {
+  const { cart } = useAppSelector((state) => state.cart);
+  const { user } = useAppSelector((state) => state.account);
+  const dispatch = useAppDispatch();
+
+  const itemCount = cart?.cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
+
   return (
     <AppBar position="static" sx={{ mb: 4 }}>
-      <Toolbar sx={{ display: "flex", justifyContent:"space-between" }}>
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="h6" sx={{mr:4}}>AbraStore</Typography>
-          <List sx={{ display: "flex" }}>
+          <Typography variant="h6">E-Commerce</Typography>
+
+          <Stack direction="row">
             {links.map((link) => (
-              <ListItem
+              <Button
+                key={link.to}
                 component={NavLink}
                 to={link.to}
                 sx={navStyles}
-                key={link.title}
               >
                 {link.title}
-              </ListItem>
+              </Button>
             ))}
-          </List>
+          </Stack>
         </Box>
+
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton component= {Link} to="/cart" size="large" edge="start" color="inherit">
-            <Badge badgeContent={totalItemCount} color="secondary">
-              <ShoppingCart/>
+          <IconButton
+            component={Link}
+            to="/cart"
+            size="large"
+            edge="start"
+            color="inherit"
+          >
+            <Badge badgeContent={itemCount} color="secondary">
+              <ShoppingCart />
             </Badge>
           </IconButton>
-          <List sx={{ display: "flex" }}>
-            {authLinks.map((link) => (
-              <ListItem
-                component={NavLink}
-                to={link.to}
-                sx={navStyles}
-                key={link.title}
-              >
-                {link.title}
-              </ListItem>
-            ))}
-          </List>
+
+          {user ? (
+            <Stack direction="row">
+              <Button sx={navStyles}>{user.name}</Button>
+              <Button sx={navStyles} onClick={() => dispatch(logout())}>
+                Log Out
+              </Button>
+            </Stack>
+          ) : (
+            <Stack direction="row">
+              {authLinks.map((link) => (
+                <Button
+                  key={link.to}
+                  component={NavLink}
+                  to={link.to}
+                  sx={navStyles}
+                >
+                  {link.title}
+                </Button>
+              ))}
+            </Stack>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
   );
 }
-export default Header;

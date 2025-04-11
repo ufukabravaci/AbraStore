@@ -15,10 +15,9 @@ import {
 } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import CartSummary from "./CartSummary";
-import { useAppSelector } from "../../hooks/useAppSelector";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { addItemToCart, deleteItemFromCart } from "./cartSlice";
 import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 
 export default function ShoppingCartPage() {
   const { cart, status } = useAppSelector((state) => state.cart);
