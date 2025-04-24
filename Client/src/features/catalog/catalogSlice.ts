@@ -5,51 +5,52 @@ import { RootState } from "../../store/store";
 
 export const fetchProducts = createAsyncThunk<IProduct[]>(
     "catalog/fetchProducts",
-    async() => {
+    async () => {
         return await requests.Catalog.list();
     }
 )
+
 export const fetchProductById = createAsyncThunk<IProduct, number>(
     "catalog/fetchProductById",
-    async(productId) => {
+    async (productId) => {
         return await requests.Catalog.details(productId);
     }
 )
 
-const productsAdapter = createEntityAdapter<IProduct>()
+const productsAdapter = createEntityAdapter<IProduct>();
 
 const initialState = productsAdapter.getInitialState({
     status: "idle",
-    isLoaded: false,
-})
+    isLoaded: false
+});
 
 export const catalogSlice = createSlice({
     name: "catalog",
     initialState,
     reducers: {},
-    extraReducers: (builder) => {
+    extraReducers: (builder => {
         builder.addCase(fetchProducts.pending, (state) => {
-            state.status = "pendingFetchProducts"
-        })
+            state.status = "pendingFetchProducts";
+        });
         builder.addCase(fetchProducts.fulfilled, (state, action) => {
-            productsAdapter.setAll(state ,action.payload)
-            state.status = "idle"
-            state.isLoaded = true
-        })
+            productsAdapter.setAll(state, action.payload);
+            state.isLoaded = true;
+            state.status = "idle";
+        });
         builder.addCase(fetchProducts.rejected, (state) => {
-            state.status = "idle"
-        })
+            state.status = "idle";
+        });
         builder.addCase(fetchProductById.pending, (state) => {
-            state.status = "pendingFetchProductById"
-        })
+            state.status = "pendingFetchProductById";
+        });
         builder.addCase(fetchProductById.fulfilled, (state, action) => {
-            productsAdapter.upsertOne(state,action.payload )
-            state.status = "idle"
-        })
+            productsAdapter.upsertOne(state, action.payload);
+            state.status = "idle";
+        });
         builder.addCase(fetchProductById.rejected, (state) => {
-            state.status = "idle"
-        })
-    }
+            state.status = "idle";
+        });
+    })
 })
 
 export const {
@@ -57,5 +58,5 @@ export const {
     selectIds: selectProductIds,
     selectEntities: selectProductEntities,
     selectAll: selectAllProducts,
-    selectTotal: selectTotalProducts,
-} = productsAdapter.getSelectors((state: RootState) => state.catalog)
+    selectTotal: selectTotalProducts
+} = productsAdapter.getSelectors((state: RootState) => state.catalog);

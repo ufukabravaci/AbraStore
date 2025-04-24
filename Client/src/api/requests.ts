@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
@@ -80,8 +81,14 @@ const Account = {
     getuser: () => queries.get("account/getuser"),
 }
 
+const Order = {
+    getOrders: () => queries.get("orders"),
+    getOrder: (id: number) => queries.get(`orders/${id}`),
+    createOrder: (formData:any) => queries.post("orders", formData)
+}
+
 const requests = {
-    Catalog, Errors, Cart, Account
+    Catalog, Errors, Cart, Account, Order
 }
 
 export default requests

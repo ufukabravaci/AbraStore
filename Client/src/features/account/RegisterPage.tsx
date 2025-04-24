@@ -11,12 +11,10 @@ import {
 import { FieldValues, useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../store/store";
 import requests from "../../api/requests";
 import { toast } from "react-toastify";
 
 export default function RegisterPage() {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const {
     register,

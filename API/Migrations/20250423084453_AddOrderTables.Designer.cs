@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250423084453_AddOrderTables")]
+    partial class AddOrderTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -155,22 +158,16 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AddresLine")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("BasketId")
+                    b.Property<string>("AddressLine")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("City")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ConversationId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("CustomerId")
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("DeliveryFree")
+                    b.Property<decimal>("DeliveryFee")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
@@ -212,11 +209,9 @@ namespace API.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ProductImage")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProductName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Quantity")

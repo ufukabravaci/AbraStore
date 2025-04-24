@@ -6,52 +6,54 @@ using System.Threading.Tasks;
 namespace API.Entity
 {
     public class Cart
+{
+    public int CartId { get; set; }
+    public string CustomerId { get; set; } = null!;
+    public List<CartItem> CartItems { get; set; } = new();
+
+    public void AddItem(Product product, int quantity)
     {
-        public int CartId { get; set; }
-        public string CustomerId { get; set; } = null!;
-        public List<CartItem> CartItems { get; set; } = new();
+        var item = CartItems.Where(c => c.ProductId == product.Id).FirstOrDefault();
 
-        public void AddItem(Product product, int quantity)
+        if (item == null)
         {
-            var existingItem = CartItems.FirstOrDefault(i => i.ProductId == product.Id);
-            if (existingItem != null)
-            {
-                existingItem.Quantity += quantity;
-            }
-            else
-            {
-                CartItems.Add(new CartItem 
-                { 
-                Product = product,
-                Quantity = quantity, 
-                });
-            }
+            CartItems.Add(new CartItem { Product = product, Quantity = quantity });
         }
-
-        public void DeleteItem(int productId, int quantity)
+        else
         {
-            var existingItem = CartItems.FirstOrDefault(i => i.ProductId == productId);
-            if (existingItem != null)
-            {
-                existingItem.Quantity -= quantity;
-                if (existingItem.Quantity <= 0)
-                {
-                    CartItems.Remove(existingItem);
-                }
-            }
-            else return;
+            item.Quantity += quantity;
         }
-        
     }
 
-
-    public class CartItem
+    public void DeleteItem(int productId, int quantity)
     {
-        public int CartItemId { get; set; }
-        public int ProductId { get; set; }
-        public Product Product { get; set; } = null!;
-        public int CartId { get; set; }
-        public int Quantity { get; set; }
-       
+        var item = CartItems.Where(c => c.ProductId == productId).FirstOrDefault();
+
+        if (item == null) return;
+
+        item.Quantity -= quantity;
+
+        if (item.Quantity == 0)
+        {
+            CartItems.Remove(item);
+        }
     }
+
+    public double CalculateTotal()
+    {
+        return (double)CartItems.Sum(i => i.Product.Price * i.Quantity);
+    }
+}
+
+public class CartItem
+{
+    public int CartItemId { get; set; }
+
+    public int ProductId { get; set; }
+    public Product Product { get; set; } = null!;
+
+    public int CartId { get; set; }
+    public int Quantity { get; set; }
+
+}
 }
